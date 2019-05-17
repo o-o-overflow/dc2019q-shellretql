@@ -1,0 +1,49 @@
+# Info for the schoreboard
+service_name: "Return_to_shellQL"
+description: |
+  La Forge built a new web application platform for our ShellQL product. Can you get the flag out?  The flag is the file `/flag`. Although the flag is not in the database this time; using shellQL to query the database might be helpful.
+  
+  http://shellretql.quals2019.oooverflow.io:9090
+
+  Attention hackers! We have undone massive horizontal scaling of shellretql in favor of massive vertical scaling. Though our test exploits have been successfully landing on this service the whole CTF, this change more closely replicates conditions when it first launched. HACK IT!
+
+  Hash of the flag 9214822b06e543db1bd94951e0955d1e0899bce16b490c18cd35ef8cd8d21c432424fa19c94e1c75b375db162371c9c5f39ec894890861e6cbcdc57833ef9813
+  
+tags:
+  - web
+
+violates_flag_format: false # if this is not "true", the flag is verfied against the flag format
+
+allow_egress: False
+
+flag: "OOO{WaTCH ouT FoR THaT ReTuRN TRiP}" # this is the flag of the service
+
+# Type can be normal or king_of_the_hill
+type: normal
+
+# This is the number of concurrent connections that a container should be able to handle.
+# This will be tested by the test script
+concurrent_connections: 16
+
+authors:
+  - adamd
+  - trickE
+
+#
+# Directories below the next two are absolute in either the `service` or `interaction` docker container.
+#
+
+# These are the files that will be "public" to the teams via the scoreboard.
+# The paths are relative to the repository!
+public_files:
+  - service/shellme.so
+
+# Test scripts are heavily encouraged.
+# All scripts should exit 0 if nothing went wrong.
+# Scripts are automatically determined to be exploit scripts if they start with the word "exploit".
+# Exploit scripts must output the flag using "FLAG: <FLAG>" and exit with 0 if the flag was captured correctly.
+# The paths are absolute in the `interaction` docker container.
+interactions:
+  - /exploit.py
+
+

